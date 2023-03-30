@@ -1,0 +1,19 @@
+package:
+  name: jupyter-vapor-widget
+  version: "1.0.0"
+
+source:
+  path: ..
+
+build:
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - jupyterlab
+    - jupyter_packaging
+    - nodejs
+    - yarn
+    - python=3.9
+  run:
+    - python=3.9
