@@ -5,14 +5,14 @@ from traitlets import Unicode, Bytes, Tuple, Bool, observe, Int
 ##########################################
 #          Development utility
 import importlib
-vapor_spec = importlib.util.find_spec("vapor")
-found = vapor_spec is not None
+# vapor_spec = importlib.util.find_spec("vapor")
+# found = vapor_spec is not None
 
-if not found:
-    import sys
-    import os
-    from pathlib import Path
-    sys.path.append(os.path.expanduser('~/Work/build-python/python'))
+# if not found:
+#     import sys
+#     import os
+#     from pathlib import Path
+#     sys.path.append(os.path.expanduser('~/Work/build-python/python'))
 #########################################
 
 from PIL import Image
@@ -100,16 +100,8 @@ class CanvasStreamWidget(widgets.DOMWidget):
 import importlib
 if importlib.util.find_spec("cppyy") is not None:
 
-    from vapor import session, renderer, dataset, camera, utils
+    # from vapor import session, renderer, dataset, camera, utils
     # from examples import example_utils
-    
-    from vapor import link
-    link.include('vapor/TrackBall.h')
-    
-    link.include('vapor/ControlExecutive.h')
-    link.include("vapor/NavigationUtils.h")
-    
-    NavigationUtils = link.NavigationUtils
     
     @widgets.register
     class VaporVisualizerWidget(CanvasStreamWidget):
@@ -123,9 +115,6 @@ if importlib.util.find_spec("cppyy") is not None:
             Middle = 2
     
         def __init__(self, ses:session.Session, *args, **kwargs):
-            self._ses = ses
-            self._trackball = link.Trackball()
-            self.Render()
     
             # import sys
             # sys.stdout = open("stdout.txt", "w")
@@ -139,22 +128,12 @@ if importlib.util.find_spec("cppyy") is not None:
             Update the visualizer with a current rendering of the session.
             :fast: renders with lower fidelity but faster. Useful for interactive rendering such as to observe a changing value with a slider.
             """
-            self.SetImage(self._ses.RenderToImage(fast=fast))
 
     
         @observe('mouseDown')
         def mouseDownChanged(self, change):
             w, h = map(int, self.resolution)
             x, y = map(int, (lambda x,y:(x*w,y*h))(*self.mousePos))
-    
-            if self.mouseDown:
-                NavigationUtils.ConfigureTrackball(self._ses.ce, self._trackball)
-                self._trackball.MouseOnTrackball(0, self.mouseButton, x, y, w, h)
-            else:
-                self._trackball.MouseOnTrackball(2, self.mouseButton, x, y, w, h)
-                self._trackball.TrackballSetMatrix()
-                NavigationUtils.SetAllCameras(self._ses.ce, self._trackball)
-                self.Render(fast=False)
     
             self.value = f"mouseDown change {change['old']} -> {change['new']}"
     
@@ -165,9 +144,3 @@ if importlib.util.find_spec("cppyy") is not None:
             w, h = map(int, self.resolution)
             x, y = map(int, (lambda x,y:(x*w,y*h))(*self.mousePos))
     
-            if self.mouseDown:
-                self._trackball.MouseOnTrackball(1, self.mouseButton, x, y, w, h)
-                self._trackball.TrackballSetMatrix()
-                NavigationUtils.SetAllCameras(self._ses.ce, self._trackball)
-    
-                self.Render(fast=True)

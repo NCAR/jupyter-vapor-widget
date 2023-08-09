@@ -7,12 +7,13 @@ source:
 
 build:
   script: "{{ PYTHON }} -m pip install . -vv"
+  noarch: python
 
 requirements:
   build:
     - jupyterlab
     - jupyter_packaging
-    - nodejs
+    - nodejs=17.9.0
     - yarn
     - python=3.9
   run:
